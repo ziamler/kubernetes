@@ -1,0 +1,37 @@
+---
+- name: reset kubeadm with forcly 
+  command: kubeadm reset --force
+
+- name: Initialize kubernets
+  shell: | 
+    kubeadm init --apiserver-advertise-address={{ hostvars[groups['master'][0]]['inventory_hostname']}} --pod-network-cidr={{ pod_net_cidr }} | grep  "kubeadm join" -A1 | tr "\n" ' ' | sed -e 's/\\//'
+  register: kube_token
+  run_once: True
+
+
+- name: copy token to localhost
+  copy: 
+    content: "{{ kube_token.stdout }}"
+    dest: /tmp/token.sh
+  delegate_to: localhost
+
+
+- name: Ensure .kube directory exists.
+  file:
+    path: ~/.kube
+    state: directory
+
+- name: Symlink the kubectl admin.conf to ~/.kube/conf
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: ~/.kube/config
+    state: link
+
+- name: change owenership 
+  shell: chown $(id -u):$(id -g) $HOME/.kube/config
+  
+- name: create fannel network
+  command: kubectl create -f https://raw.githubusercontent.com/coreos/flannel/62e44c867a2846fefb68bd5f178daf4da3095ccb/Documentation/kube-flannel.yml
+
+
+

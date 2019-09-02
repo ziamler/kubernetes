@@ -1,0 +1,4 @@
+---
+- include: Kubernets-Docker-Install.yml
+- include: Kubernets-Install.yml
+

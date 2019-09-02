@@ -1,0 +1,14 @@
+---
+
+#- name: generate new token
+#  command: kubeadm token create --print-join-command
+
+- name: copy token file
+  copy:
+    src: /tmp/token.sh
+    dest: /tmp/token.sh
+    mode: 0755
+
+- name: join nodes
+  command: sh /tmp/token.sh
+  #delegate_to: "{{ hostvars[groups['node'][0]]['inventory_hostname']}}"
