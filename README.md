@@ -30,19 +30,19 @@ Example Playbook
 - hosts: master,node
   remote_user: root
   roles:
-    - role: k8s
+    - role: kubernetes
 
 - hosts: master
   remote_user: root
   vars_files:
-  - roles/k8s/defaults/main.yml
+  - roles/kubernetes/defaults/main.yml
   tasks:
-  - import_tasks: roles/k8s/tasks/Kubernets-setup.yml
+  - import_tasks: roles/kubernetes/tasks/Kubernets-setup.yml
 
 - hosts: node
   remote_user: root
   tasks:
-   - import_tasks: roles/k8s/tasks/join_node.yml
+   - import_tasks: roles/kubernetes/tasks/join_node.yml
 
 License
 -------
@@ -52,3 +52,4 @@ BSD
 Author Information
 ------------------
 Khushal Bisht
+
